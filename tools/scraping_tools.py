@@ -1,3 +1,4 @@
+import time
 import asyncio
 import requests_html
 
@@ -32,6 +33,7 @@ class WebManager:
 		Put each request to the tasks list.
 		"""
 		for i in range(0, len(urls)):
+			time.sleep(1)
 			task = asyncio.create_task(self.get_response(urls[i]))
 			list_of_tasks.append(task)
 		results = await asyncio.gather(*list_of_tasks)
