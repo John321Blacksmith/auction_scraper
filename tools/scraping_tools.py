@@ -51,7 +51,7 @@ class WebCrawler:
 		self.site_dict = site_dict
 		self.web_manager = WebManager()
 
-	async def crawl_links(self):
+	async def crawl_links(self) -> list[str]:
 		"""
 		Fetch all the links dedicated
 		to the topic.
@@ -71,14 +71,13 @@ class WebScraper:
 		self.web_manager = WebManager()
 		self.list_of_row_links = []
 
-	async def extract_table_row_link(self, urls: list[str]):
+	async def extract_table_row_link(self, urls: list[str]) -> None:
 		"""
 		Find a table on the page and
 		extract the item links inside
 		of it.
 		"""
 		results = await self.web_manager.create_tasks(urls)
-		print(len(results))
 		for i in range(0, len(results)):
 			table = results[i].html.find(self.site_dict['table'], first=True)
 
@@ -86,7 +85,7 @@ class WebScraper:
 				link = row.find(self.site_dict['link'], first=True).attrs['href']
 				self.list_of_row_links.append(self.site_dict['source'][:18] + link)
 
-	async def extract_data_of_each_item(self, list_of_objs=[]):
+	async def extract_data_of_each_item(self, list_of_objs=[]) -> list[dict]:
 		"""
 		Follow each link and retrieve
 		the corresponding data, form
@@ -95,20 +94,18 @@ class WebScraper:
 		"""
 		results = await self.web_manager.create_tasks(self.list_of_row_links)
 		for i in range(0, len(results)):
-			objects = results[i].html.xpath(self.site_dict['object'], first=True)
+			obj = results[i].html.xpath(self.site_dict['object'], first=True)
 
-			for i in range(0, len(objects)):
-				obj = {
-
-					'date': objects[i].xpath(self.site_dict['date'], first=True),
-					'square': objects[i].xpath(self.site_dict['square'], first=True),
-					'region': objects[i].xpath(self.site_dict['region'], first=True),
-					'status': objects[i].xpath(self.site_dict['status'], first=True),
-					'submit_deadline': objects[i].xpath(self.site_dict['submit_deadline'], first=True),
-					'contribution': nobjects[i].xpath(self.site_dict['contribution'], first=True),
-					'organizer': objects[i].xpath(self.site_dict['organizer'], first=True),
-				}
-				self.list_of_objs.append(obj)
+			obj = {
+				'date': obj.xpath(self.site_dict['date'], first=True),
+				'square': obj.xpath(self.site_dict['square'][0], first=True),
+				'region': obj.xpath(self.site_dict['region'], first=True),
+				'status': obj.xpath(self.site_dict['status'], first=True),
+				'submit_deadline': obj.xpath(self.site_dict['submit_deadline'], first=True),
+				'contribution': obj.xpath(self.site_dict['contribution'], first=True),
+				'organizer': obj.xpath(self.site_dict['organizer'], first=True),
+			}
+			list_of_objs.append(obj)
 
 		return list_of_objs
 
