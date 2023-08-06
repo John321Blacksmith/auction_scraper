@@ -25,6 +25,7 @@ class WebManager:
 		except Exception as exception:
 			print(f'Error because {exception}')
 
+		time.sleep(1)
 		return response
 
 	async def create_tasks(self, urls: list[str], list_of_tasks=[]):
@@ -40,6 +41,43 @@ class WebManager:
 		return results
 
 
+class FileManager:
+	"""
+	This object either takes a list
+	of links and saves them or gets
+	the file and retrieves ones from.
+	"""
+	def __init__(self, filename: str):
+		self.filename = filename
+
+	async def save_links(self, list_of_page_links: list[str]):
+		"""
+		Save the list of parsed links
+		to the flat file.
+		"""
+		try:
+			with open(self.filename, mode='a', encoding='utf-8') as f:
+				for i in range(0, len(self.list_of_page_links)):
+					f.write(f'{self.list_of_page_links[i]}\n')
+		except (Exception, TypeError) as error:
+			print(f'cannot operate data saving beacause {error}')
+		else:
+			print(f'the links have been saved to the \'{self.filename}\'.')
+
+	async def pull_out_page_links(self, links=[]) -> list[str]:
+		"""
+		Take the saved links from the file.
+		"""
+		try:
+			with open(self.filename, mode='r', encoding='utf-8') as f:
+				for link in f.readlines():
+					links.append(link)
+
+		except (Exception, FileNotFoundError) as error:
+			print(f'cannot retrieve links beacause {error}')
+		return links
+
+
 class WebCrawler:
 	"""
 	This object collects links
@@ -47,16 +85,26 @@ class WebCrawler:
 	to the hard disk.
 	"""
 
-	def __init__(self, site_dict: dict):
+	def __init__(self, filename: str, site_dict: dict):
 		self.site_dict = site_dict
 		self.web_manager = WebManager()
+		self.list_of_page_links = []
 
-	async def crawl_links(self) -> list[str]:
+	async def crawl_links(self, url) -> list[str]:
 		"""
 		Fetch all the links dedicated
 		to the topic.
 		"""
-		...
+		self.list_of_page_links.append(url)
+		response = await self.web_manager.get_response(url)
+		next_page_slug = response.html.find(self.site_dict['next_page'], first=True)
+		
+		if next_page:
+			url = self.site_dict['source'][:18] + next_page_slug
+
+			return await self.crawl_links(url)
+		else:
+			return self.list_of_page_links
 
 
 class WebScraper:
