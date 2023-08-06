@@ -11,6 +11,6 @@ auction_site = {
 	'submit_deadline': './/dl[8]',
 	'contribution': './/dl[4]',
 	'organizer': './/dl[6]',
-	'next_page': '',
+	'next_page': '.u-pagination-v1-4--active',
 	'months': ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
 }
