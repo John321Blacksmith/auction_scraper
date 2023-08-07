@@ -1,6 +1,7 @@
 import time
 import asyncio
 import requests_html
+from decorators import filter_objects
 
 
 class WebManager:
@@ -133,6 +134,7 @@ class WebScraper:
 				link = row.find(self.site_dict['link'], first=True).attrs['href']
 				self.list_of_row_links.append(self.site_dict['source'][:18] + link)
 
+	@filter_objects
 	async def extract_data_of_each_item(self, list_of_objs=[]) -> list[dict]:
 		"""
 		Follow each link and retrieve
