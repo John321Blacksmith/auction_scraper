@@ -2,7 +2,7 @@ import asyncio
 import psycopg2
 
 
-class DataManager:
+class DataDumper:
 	"""
 	This object takes a list of
 	items and dumps each one to
@@ -32,21 +32,22 @@ class DataManager:
 			cursor = connection.cursor()
 
 			for i in range(0, len(self.list_ob_objects)):
-				cursor.execute("""INSERT INTO auctions(date, square, area, status, submit_deadline, contribution, organizer)
-								  VALUES(%s,%s,%s,%s,%s,%s,%s);
-								""",
-					(
-						self.list_of_objects[i]['date'],
-						self.list_of_objects[i]['square'],
-						self.list_of_objects[i]['region'],
-						self.list_of_objects[i]['status'],
-						self.list_of_objects[i]['submit_deadline'],
-						self.list_of_objects[i]['contribution'],
-						self.list_of_objects[i]['organizer'],
-				)
-			)
+				if self.list_of_objects[i] is not None:
+					cursor.execute("""INSERT INTO auctions(auction_date, square, area, status, submit_deadline, contribution, organizer)
+									  VALUES(%s,%s,%s,%s,%s,%s,%s);
+									""",
+							(
+							self.list_of_objects[i]['date'],
+							self.list_of_objects[i]['square'],
+							self.list_of_objects[i]['region'],
+							self.list_of_objects[i]['status'],
+							self.list_of_objects[i]['submit_deadline'],
+							self.list_of_objects[i]['contribution'],
+							self.list_of_objects[i]['organizer'],
+						)
+					)
 
-			connection.commit()
+				connection.commit()
 
 			cursor.close()
 		except (Exception, psycopg2.DatabaseError) as error:
@@ -56,4 +57,4 @@ class DataManager:
 			if connection is not None:
 				connection.close()
 
-		
+
