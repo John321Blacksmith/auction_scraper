@@ -43,11 +43,13 @@ async def extract_auctions():
 
 async def save_auctions():
 	auctions = await extract_auctions()
+	# wait a little bit
+	time.sleep(3)
 	data_manager = DataManager(auctions)
 	# put each item to the
 	await data_manager.save_records()
-	
-# wait a little bit
-time.sleep(3)
+	print('Database updated!')
+
+
 if __name__ == '__main__':
 	asyncio.run(main())
