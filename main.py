@@ -43,8 +43,9 @@ async def extract_auctions():
 
 async def save_auctions():
 	auctions = await extract_auctions()
-	data_manager = DataManager()
-
+	data_manager = DataManager(auctions)
+	# put each item to the
+	await data_manager.save_records()
 	
 # wait a little bit
 time.sleep(3)
