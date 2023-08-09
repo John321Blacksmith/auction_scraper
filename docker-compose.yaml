@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
       PGDATA: ${PGDATA}
     volumes:
-      - dbtuto:/data/postgres-tuto
+      - dbtuto:/data/web-scraper-data
 
     ports:
       - '5432:5432'
