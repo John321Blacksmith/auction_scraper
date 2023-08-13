@@ -1,7 +1,7 @@
 import time
 import asyncio
 import requests_html
-from decorators import filter_objects
+from tools.decorators import filter_objects
 
 
 class WebManager:
@@ -22,11 +22,11 @@ class WebManager:
 		"""
 		response = None
 		try:
+			time.sleep(1)
 			response = await self._session.get(url)
 		except Exception as exception:
 			print(f'Error because {exception}')
 
-		time.sleep(1)
 		return response
 
 	async def create_tasks(self, urls: list[str], list_of_tasks=[]):
@@ -46,7 +46,8 @@ class FileManager:
 	"""
 	This object either takes a list
 	of links and saves them or gets
-	the file and retrieves ones from.
+	the file and retrieves ones from
+	there.
 	"""
 	def __init__(self, filename: str):
 		self.filename = filename
@@ -58,8 +59,8 @@ class FileManager:
 		"""
 		try:
 			with open(self.filename, mode='a', encoding='utf-8') as f:
-				for i in range(0, len(self.list_of_page_links)):
-					f.write(f'{self.list_of_page_links[i]}\n')
+				for i in range(0, len(list_of_page_links)):
+					f.write(f'{list_of_page_links[i]}\n')
 		except (Exception, TypeError) as error:
 			print(f'cannot operate data saving beacause {error}')
 		else:
@@ -86,24 +87,27 @@ class WebCrawler:
 	to the hard disk.
 	"""
 
-	def __init__(self, filename: str, site_dict: dict):
+	def __init__(self, site_dict: dict):
 		self.site_dict = site_dict
 		self.web_manager = WebManager()
 		self.list_of_page_links = []
 
-	async def crawl_links(self, url) -> list[str]:
+	async def crawl_links(self, url, counter=1) -> list[str]:
 		"""
 		Fetch all the links dedicated
 		to the topic.
 		"""
-		self.list_of_page_links.append(url)
 		response = await self.web_manager.get_response(url)
-		next_page_slug = response.html.find(self.site_dict['next_page'], first=True)
-		
-		if next_page:
-			url = self.site_dict['source'][:18] + next_page_slug
+		# fetch all the rest of the elements with next page links from a single page
+		next_page_slugs = response.html.find(self.site_dict['next_page'])
+		amount = len(next_page_slugs)
+		counter += amount
+		# use a number of elements to iterate over the slugs and extract the link from each one
+		if amount != 0:
+			for i in range(0, amount):
+				self.list_of_page_links.append(self.site_dict['source'] + next_page_slugs[i].attrs['href'])
 
-			return await self.crawl_links(url)
+			return await self.crawl_links(f'{self.site_dict["source"]}?ap={counter}', counter)
 		else:
 			return self.list_of_page_links
 

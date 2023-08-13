@@ -5,7 +5,7 @@ auction_site = {
 	'link': 'a',
 	'object': '/html/body/main/section[3]/div/div[1]/div[1]',
 	'date': './/div[1]/h1',
-	'square': ['.//div[1]/p', './/div[1]/h1/i[1]'],
+	'square': './/div[1]/p',
 	'region': './/div[1]/h1',
 	'status': './/dl[1]/dd',
 	'submit_deadline': './/dl[8]',

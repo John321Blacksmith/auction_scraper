@@ -41,14 +41,14 @@ async def extract_auctions():
 	return auctions
 
 
-async def save_auctions():
-	auctions = await extract_auctions()
-	# wait a little bit
-	time.sleep(3)
-	data_manager = DataManager(auctions)
-	# put each item to the
-	await data_manager.save_records()
-	print('Database updated!')
+# async def save_auctions():
+# 	auctions = await extract_auctions()
+# 	# wait a little bit
+# 	time.sleep(3)
+# 	data_manager = DataManager(auctions)
+# 	# put each item to the
+# 	await data_manager.save_records()
+# 	print('Database updated!')
 
 
 if __name__ == '__main__':

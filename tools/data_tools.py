@@ -9,7 +9,7 @@ class DataDumper:
 	the database.
 	"""
 	def __init__(self, list_of_objs: list[dict], **creds):
-		self.list_ob_objects = list_of_objects
+		self.list_ob_objects = list_of_objs
 		self._creds = creds
 
 

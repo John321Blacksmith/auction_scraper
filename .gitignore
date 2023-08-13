@@ -3,3 +3,5 @@ __pycache__/
 mock.html
 mock1.html
 test.py
+.env
+*.csv
